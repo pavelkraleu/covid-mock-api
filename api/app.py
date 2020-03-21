@@ -54,7 +54,12 @@ def material_available():
         "message": "Problém s ověřením identity. Kontaktujte koordinátora.",
     }
 
-    return jsonify(success_response)
+    responses = {"invalid_token": error_token}
+
+    error_state = request.headers.get(ERROR_HTTP_HEADER_NAME)
+    response = responses.get(error_state, success_response)
+
+    return jsonify(response)
 
 
 @app.route("/api/v1/validate", methods=["POST"])
@@ -75,7 +80,12 @@ def validate_id():
         "limits": [{"id": 10, "limit": 20}, {"id": 13, "limit": 15}],
     }
 
-    return jsonify(success_response)
+    responses = {"warning_time": warning_response, "error_stolen": danger_response}
+
+    error_state = request.headers.get(ERROR_HTTP_HEADER_NAME)
+    response = responses.get(error_state, success_response)
+
+    return jsonify(response)
 
 
 @app.route("/api/v1/dispense", methods=["POST"])
