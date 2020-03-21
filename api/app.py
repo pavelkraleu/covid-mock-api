@@ -1,6 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+
+ERROR_HTTP_HEADER_NAME = "ERROR_STATE"
 
 
 @app.route("/")
@@ -10,11 +12,12 @@ def root():
 
 @app.route("/api/v1/start", methods=["POST"])
 def login_start():
+
     success_response = {
         "result": "success",
         "token": "djE6MTU4NDcxOTcxNzoxMjM0NTpoYXNoCg==",
     }
-    error_response = {
+    invalid_credentials = {
         "result": "error",
         "code": "invalid-credentials",
         "message": "Přihlášení se nezdařilo, nezadali jste chybné heslo?",
@@ -25,7 +28,15 @@ def login_start():
         "message": "Taková lokalita neexistuje. Kontaktujte koordinátora.",
     }
 
-    return jsonify(success_response)
+    responses = {
+        "invalid_credentials": invalid_credentials,
+        "invalid_location": error_response_location,
+    }
+
+    error_state = request.headers.get(ERROR_HTTP_HEADER_NAME)
+    response = responses.get(error_state, success_response)
+
+    return jsonify(response)
 
 
 @app.route("/api/v1/material", methods=["GET"])
