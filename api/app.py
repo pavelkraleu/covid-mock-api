@@ -67,5 +67,12 @@ def validate_id():
     return jsonify(success_response)
 
 
+@app.route("/api/v1/dispense", methods=["POST"])
+def dispense():
+    success_response = {"result": "success"}
+
+    return jsonify(success_response)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port="8080")
