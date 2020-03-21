@@ -5,6 +5,11 @@ app = Flask(__name__)
 ERROR_HTTP_HEADER_NAME = "ERROR_STATE"
 
 
+def _get_response(valid_responses: dict, default_success_response):
+    error_state = request.headers.get(ERROR_HTTP_HEADER_NAME)
+    return valid_responses.get(error_state, default_success_response)
+
+
 @app.route("/")
 def root():
     return "Hello"
@@ -33,10 +38,7 @@ def login_start():
         "invalid_location": error_response_location,
     }
 
-    error_state = request.headers.get(ERROR_HTTP_HEADER_NAME)
-    response = responses.get(error_state, success_response)
-
-    return jsonify(response)
+    return jsonify(_get_response(responses, success_response))
 
 
 @app.route("/api/v1/material", methods=["GET"])
@@ -56,10 +58,7 @@ def material_available():
 
     responses = {"invalid_token": error_token}
 
-    error_state = request.headers.get(ERROR_HTTP_HEADER_NAME)
-    response = responses.get(error_state, success_response)
-
-    return jsonify(response)
+    return jsonify(_get_response(responses, success_response))
 
 
 @app.route("/api/v1/validate", methods=["POST"])
@@ -82,10 +81,7 @@ def validate_id():
 
     responses = {"warning_time": warning_response, "error_stolen": danger_response}
 
-    error_state = request.headers.get(ERROR_HTTP_HEADER_NAME)
-    response = responses.get(error_state, success_response)
-
-    return jsonify(response)
+    return jsonify(_get_response(responses, success_response))
 
 
 @app.route("/api/v1/dispense", methods=["POST"])
