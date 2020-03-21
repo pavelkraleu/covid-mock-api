@@ -28,5 +28,23 @@ def login_start():
     return jsonify(success_response)
 
 
+@app.route("/api/v1/material", methods=["GET"])
+def material_available():
+    success_response = {
+        "result": "success",
+        "material": [
+            {"id": 10, "name": "Rouška (Batist)"},
+            {"id": 13, "name": "Ústenka (Panep)"},
+        ],
+    }
+    error_token = {
+        "result": "error",
+        "code": "invalid-token",
+        "message": "Problém s ověřením identity. Kontaktujte koordinátora.",
+    }
+
+    return jsonify(success_response)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port="8080")
