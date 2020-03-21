@@ -46,5 +46,26 @@ def material_available():
     return jsonify(success_response)
 
 
+@app.route("/api/v1/validate", methods=["POST"])
+def validate_id():
+    success_response = {
+        "result": "success",
+        "message": "V pořádku.",
+        "limits": [{"id": 10, "limit": 20}, {"id": 13, "limit": 15}],
+    }
+    warning_response = {
+        "result": "warning",
+        "message": "Předčasný výdej, občan má nárok na 70% materiálu.",
+        "limits": [{"id": 10, "limit": 14}, {"id": 13, "limit": 11}],
+    }
+    danger_response = {
+        "result": "danger",
+        "message": "Pozor, odcizený doklad!",
+        "limits": [{"id": 10, "limit": 20}, {"id": 13, "limit": 15}],
+    }
+
+    return jsonify(success_response)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port="8080")
